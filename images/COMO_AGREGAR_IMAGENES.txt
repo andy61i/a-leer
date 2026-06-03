@@ -1,0 +1,29 @@
+КАК ДОБАВИТЬ КАРТИНКИ ИЗ CHATGPT (необязательно)
+==================================================
+
+Приложение работает сразу с эмодзи. Если хочешь заменить эмодзи на
+мультяшные картинки (стиль La Granja de Zenón), просто положи файлы
+в ЭТУ папку (leer/images/) с именем, равным слову.
+
+Поддерживаются форматы: .png .jpg .jpeg .webp
+Приложение само подхватит файл — перезагружать ничего не надо,
+просто открой страницу заново.
+
+Имена файлов (ровно так, маленькими буквами):
+
+  Животные:  oso  gato  pato  vaca  foca  mono  toro  loro  sapo  pavo  puma
+  Еда:       pan  uva  pera  sopa  taco  papa  tomate
+  Цвета:     rosa  lila
+  Транспорт: moto  auto  bote  barco  tren  bici
+  Объекты:   pelota  vaso  cama  casa  globo  libro
+
+Примеры: vaca.png, gato.jpg, tomate.png
+
+Совет по генерации (тот же промпт, что сработал для коровы):
+  "Children's flashcard illustration of a single <ЖИВОТНОЕ/ПРЕДМЕТ>,
+   bright rounded cartoon style of 'La Granja de Zenón', big friendly
+   eyes, thick outlines, saturated colors, centered, simple solid
+   pastel background, no text, square 1:1."
+
+Картинки лучше квадратные (1:1) — так они аккуратно лягут в карточку
+и в «пазл» подсказки.
