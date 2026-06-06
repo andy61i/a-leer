@@ -232,9 +232,25 @@ const WORDS = [
   {w:'casa',   syl:['ca','sa'],     em:'🏠', cat:'objetos',    lvl:4},
   {w:'globo',  syl:['glo','bo'],    em:'🎈', cat:'objetos',    lvl:4},
   {w:'libro',  syl:['li','bro'],    em:'📖', cat:'objetos',    lvl:4},
+  {w:'venado', syl:['ve','na','do'],em:'🦌', cat:'animales',   lvl:5},
+  {w:'llave',  syl:['lla','ve'],    em:'🔑', cat:'objetos',    lvl:5},
+  {w:'flores', syl:['flo','res'],   em:'💐', cat:'plantas',    lvl:5},
+  {w:'computadora', syl:['com','pu','ta','do','ra'], em:'💻', cat:'objetos', lvl:5},
+  {w:'pastel', syl:['pas','tel'],   em:'🍰', cat:'comida',     lvl:5},
+  {w:'helado', syl:['he','la','do'],em:'🍦', cat:'comida',     lvl:5},
+  {w:'cangrejo', syl:['can','gre','jo'], em:'🦀', cat:'animales', lvl:5},
+  {w:'gatito',  syl:['ga','ti','to'],  em:'🐱', cat:'animales', lvl:6},
+  {w:'capibara', syl:['ca','pi','ba','ra'], em:'🦫', cat:'animales', lvl:6},
+  {w:'ratón',   syl:['ra','tón'],      em:'🐭', cat:'animales', lvl:6},
+  {w:'lápiz',   syl:['lá','piz'],      em:'✏️', cat:'objetos',  lvl:6},
+  {w:'anteojos', syl:['an','te','o','jos'], em:'👓', cat:'objetos', lvl:6},
+  {w:'teléfono', syl:['te','lé','fo','no'], em:'☎️', cat:'objetos', lvl:6},
+  {w:'camisa',  syl:['ca','mi','sa'],  em:'👕', cat:'objetos',  lvl:6},
+  {w:'barba',   syl:['bar','ba'],      em:'🧔', cat:'cuerpo',   lvl:6},
+  {w:'orejas',  syl:['o','re','jas'],  em:'👂', cat:'cuerpo',   lvl:6},
 ];
 const PALETTE = ['#ff5252','#2e8bff','#27c267','#ff9f1c','#9b5de5','#00bcd4'];
-const THEMES = [['todos','Todos'],['animales','Animales 🐾'],['comida','Comida 🍎'],['colores','Colores 🎨'],['transporte','Transporte 🚗'],['objetos','Objetos ⚽']];
+const THEMES = [['todos','Todos'],['animales','Animales 🐾'],['comida','Comida 🍎'],['colores','Colores 🎨'],['transporte','Transporte 🚗'],['objetos','Objetos ⚽'],['plantas','Plantas 🌸'],['cuerpo','Cuerpo 🙂']];
 
 /* =================== STATE =================== */
 const STORE = 'aleer_uliana_v1';
@@ -370,7 +386,7 @@ function markRead(){
 function levelComplete(){
   playFanfare(); confetti(60);
   document.getElementById('cheer').textContent='¡Nivel completado! 🏆';
-  if(curLevel<4 && prog.maxLevel<curLevel+1){ prog.maxLevel=curLevel+1; save(); }
+  if(curLevel<6 && prog.maxLevel<curLevel+1){ prog.maxLevel=curLevel+1; save(); }
 }
 function pick(a){ return a[Math.random()*a.length|0]; }
 function syncStars(){ document.getElementById('starCount').textContent=totalStars(); }
@@ -423,7 +439,7 @@ function openMenu(){
   document.getElementById('sheetBg').classList.add('open');
   // levels
   const lp=document.getElementById('levelPills'); lp.innerHTML='';
-  [1,2,3,4].forEach(l=>{
+  [1,2,3,4,5,6].forEach(l=>{
     const b=document.createElement('button');
     b.className='pill'+(l===curLevel?' sel':'');
     b.textContent='Nivel '+l;
