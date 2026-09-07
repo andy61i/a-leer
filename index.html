@@ -23,25 +23,49 @@
   .screen.active{display:flex;}
 
   /* ---------- Top bar ---------- */
-  .topbar{display:flex; align-items:center; gap:10px; flex:0 0 auto;}
-  .topbar .title{font-size:22px; font-weight:800; color:var(--purple);}
+  .topbar{display:flex; align-items:center; gap:10px; flex:0 0 auto;
+          width:100%; max-width:680px; margin:0 auto;}
   .topbar .spacer{flex:1;}
-  .chip{background:#fff; border:none; border-radius:999px; padding:8px 14px; font-size:16px;
-        font-weight:700; box-shadow:var(--shadow); cursor:pointer; color:var(--ink); white-space:nowrap;}
-  .chip.stars{color:var(--orange);}
-  .icon-btn{width:46px; height:46px; border-radius:50%; border:none; background:#fff; box-shadow:var(--shadow);
-            font-size:22px; cursor:pointer; flex:0 0 auto;}
-
-  /* ---------- Start screen ---------- */
-  #start{align-items:center; justify-content:center; text-align:center;}
-  #start h1{font-size:clamp(34px,9vw,72px); margin:0; color:var(--pink); text-shadow:2px 3px 0 #fff;}
-  #start .sub{font-size:clamp(18px,4vw,26px); color:var(--purple); margin:6px 0 26px; font-weight:700;}
+  .chip{background:#fff; border:none; border-radius:999px; padding:10px 18px; font-size:clamp(16px,4vw,22px);
+        font-weight:800; box-shadow:var(--shadow); color:var(--ink); white-space:nowrap;}
+  .chip.cups{color:var(--orange);}
   .big-btn{border:none; border-radius:var(--r); padding:22px 40px; font-size:clamp(22px,5vw,34px);
            font-weight:800; color:#fff; background:var(--green); box-shadow:var(--shadow); cursor:pointer;
-           transition:transform .08s;}
+           transition:transform .08s; font-family:inherit;}
   .big-btn:active{transform:scale(.95);}
-  .start-row{display:flex; gap:14px; flex-wrap:wrap; justify-content:center; margin-top:18px;}
-  .start-row .big-btn{background:#fff; color:var(--purple); font-size:clamp(16px,4vw,22px); padding:16px 26px;}
+  .big-btn.alt{background:#fff; color:var(--purple);}
+
+  /* The adult's corner: small on purpose, and it only opens on a long press. */
+  .gear{width:44px; height:44px; border-radius:50%; border:none; background:#fff; box-shadow:var(--shadow);
+        font-size:20px; opacity:.6; cursor:pointer; flex:0 0 auto;}
+  .gear.corner{position:absolute; right:14px; bottom:14px;}
+  .backbtn{border:none; border-radius:var(--r); padding:14px 22px; min-height:56px; font-family:inherit;
+           font-size:clamp(18px,4.5vw,22px); font-weight:800; color:#fff; background:var(--blue);
+           box-shadow:var(--shadow); cursor:pointer; transition:transform .08s; flex:0 0 auto;}
+  .backbtn:active{transform:scale(.95);}
+  .lvlname{font-size:clamp(16px,4vw,20px); font-weight:800; color:var(--purple); white-space:nowrap;}
+
+  /* ---------- Level map ---------- */
+  #map{align-items:center; justify-content:center; gap:10px;}
+  #map h1{font-size:clamp(28px,7vw,52px); margin:2px 0 0; color:var(--pink); text-shadow:2px 3px 0 #fff;
+          text-align:center;}
+  /* The column count follows the width: 5 on a wide screen, 3 on a narrow phone,
+     where the percentage floor overrides the pixel one so 15 tiles still fit. */
+  #map .grid{flex:0 1 auto; min-height:0; overflow:auto; display:grid; width:100%; max-width:680px;
+             margin:0 auto; grid-template-columns:repeat(auto-fill,minmax(min(108px,28%),1fr)); gap:12px;
+             padding:6px; align-content:start;}
+  .lvltile{aspect-ratio:1/1; background:#fff; border:none; border-radius:20px; box-shadow:var(--shadow);
+           display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+           cursor:pointer; font-family:inherit; transition:transform .08s;}
+  .lvltile:active{transform:scale(.95);}
+  .lvltile .num{font-size:clamp(20px,5vw,28px); font-weight:800; color:var(--purple);}
+  .lvltile .mark{font-size:clamp(26px,6vw,40px); line-height:1;}
+  .lvltile.won .mark{animation:sway 3s ease-in-out infinite;}
+  .lvltile.locked{filter:grayscale(1); opacity:.45; cursor:default;}
+  /* The level the child stopped at: a ring so a five-year-old sees where to tap. */
+  .lvltile.next{animation:ring 1.8s ease-in-out infinite;}
+  @keyframes ring{0%,100%{box-shadow:0 0 0 4px var(--green), var(--shadow)}
+                  50%{box-shadow:0 0 0 9px rgba(39,194,103,.4), var(--shadow)}}
 
   /* ---------- Game card ---------- */
   #game{align-items:center;}
@@ -63,8 +87,8 @@
   /* The size of a game syllable follows the length of the word: JS sets --wlen to the
      width the word needs, in em, and the rule divides the usable width by it. The
      usable width is the stage, not the window: the stage stops at 680px, so dividing
-     the viewport would let a long word overflow it on a wide screen. The vowel
-     warm-up keeps the plain size because it never sets --wlen. */
+     the viewport would let a long word overflow it on a wide screen. The rule is
+     scoped to #word so it cannot shrink a .syl used anywhere else. */
   #word .syl{font-size:clamp(26px, calc(min(92vw, 660px) / var(--wlen,8)), 104px);}
   #word .dot{font-size:clamp(18px, calc(min(52vw, 370px) / var(--wlen,8)), 60px); color:#bbb; font-weight:800;}
   .syl.bounce{animation:bounce .5s;}
@@ -108,32 +132,17 @@
   #trophy .row{position:relative; display:flex; gap:14px; flex-wrap:wrap; justify-content:center; opacity:0;}
   #trophy .row.on{opacity:1; transition:opacity .5s;}
 
-  /* ---------- Trophy shelf ---------- */
-  #shelf .grid{flex:1 1 auto; min-height:0; overflow:auto; display:grid; width:100%; max-width:620px;
-               margin:0 auto; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:12px;
-               padding:6px; align-content:start;}
-  .pedestal{aspect-ratio:1/1; background:#fff; border-radius:20px; box-shadow:var(--shadow); display:flex;
-            flex-direction:column; align-items:center; justify-content:center; gap:2px;}
-  .pedestal .item{font-size:44px; line-height:1;}
-  .pedestal.won .item{animation:sway 3s ease-in-out infinite;}
   @keyframes sway{0%,100%{transform:rotate(-5deg)}50%{transform:rotate(5deg)}}
-  .pedestal.locked{filter:grayscale(1); opacity:.4;}
-  .pedestal .lab{font-size:14px; font-weight:800; color:var(--purple);}
 
-  /* ---------- Menu sheet ---------- */
+  /* ---------- Adult's panel ---------- */
   .sheet-bg{position:fixed; inset:0; background:rgba(0,0,0,.35); display:none; z-index:30;}
   .sheet-bg.open{display:block;}
-  .sheet{position:absolute; right:10px; top:64px; background:#fff; border-radius:20px; box-shadow:var(--shadow);
-         padding:14px; width:min(340px,90vw); max-height:80vh; overflow:auto;
+  /* Centred, not pinned to a window edge: the panel used to drift far from its button. */
+  .sheet{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+         background:#fff; border-radius:20px; box-shadow:var(--shadow);
+         padding:16px; width:min(340px,90vw); max-height:80vh; overflow:auto;
          display:flex; flex-direction:column; gap:10px;}
   .sheet h3{margin:4px 0; font-size:15px; color:var(--purple); text-transform:uppercase; letter-spacing:.5px;}
-  .levelgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:8px;}
-  .lvl{border:2px solid #eee; background:#fff; border-radius:14px; padding:10px 0; font-size:16px;
-       font-weight:800; cursor:pointer; position:relative;}
-  .lvl.sel{background:var(--purple); color:#fff; border-color:var(--purple);}
-  .lvl.locked{opacity:.45;}
-  .lvl.won{border-color:var(--gold); box-shadow:inset 0 -3px 0 var(--gold);}
-  .lvl .mark{position:absolute; top:-6px; right:-4px; font-size:14px;}
   .pillrow{display:flex; gap:8px; flex-wrap:wrap;}
   .pill{border:2px solid #eee; background:#fff; border-radius:999px; padding:8px 14px; font-size:15px;
         font-weight:700; cursor:pointer;}
@@ -146,25 +155,23 @@
 </head>
 <body>
 
-<!-- ================= START ================= -->
-<section id="start" class="screen active">
+<!-- ================= LEVEL MAP ================= -->
+<section id="map" class="screen active">
   <h1 id="greet">¡Hola! 🌟</h1>
-  <div class="sub">¿Vamos a leer juntos?</div>
-  <button class="big-btn" onclick="startGame()">¡A leer! 📖</button>
-  <div class="start-row">
-    <button class="big-btn" onclick="openVowels()">Las vocales 🅰️</button>
-    <button class="big-btn" onclick="openShelf()">Mis trofeos 🏆</button>
-  </div>
+  <span class="chip cups">🏆 <span id="cupCount">0</span>/15</span>
+  <div class="grid" id="mapGrid"></div>
+  <div class="hintline">Un nivel con 🔒 se abre con el trofeo del nivel anterior.
+    El adulto puede abrirlo igual: mantén el dedo sobre el candado. El ⚙️ se abre así también.</div>
+  <button class="gear corner" id="gearMap">⚙️</button>
 </section>
 
 <!-- ================= GAME ================= -->
 <section id="game" class="screen">
   <div class="topbar">
-    <button class="icon-btn" onclick="showScreen('start')">🏠</button>
-    <span class="chip" id="levelChip">Nivel 1</span>
+    <button class="backbtn" onclick="backToMap()">🗺️ Niveles</button>
     <div class="spacer"></div>
-    <button class="chip stars" onclick="openShelf()"><span id="starCount">0</span> ⭐</button>
-    <button class="icon-btn" onclick="openMenu()">☰</button>
+    <span class="lvlname" id="levelChip">Nivel 1</span>
+    <button class="gear" id="gearGame">⚙️</button>
   </div>
 
   <div class="stage">
@@ -186,20 +193,6 @@
   </div>
 </section>
 
-<!-- ================= VOWELS ================= -->
-<section id="vowels" class="screen">
-  <div class="topbar">
-    <button class="icon-btn" onclick="showScreen('start')">🏠</button>
-    <span class="title">Las vocales</span>
-    <div class="spacer"></div>
-  </div>
-  <div class="stage">
-    <div class="word" id="vowelRow" style="gap:14px"></div>
-    <div class="cheer" id="vowelCheer">Toca cada vocal 👆</div>
-    <button class="big-btn" id="vowelGo" style="display:none" onclick="startGame()">¡A leer! 📖</button>
-  </div>
-</section>
-
 <!-- ================= TROPHY ================= -->
 <section id="trophy" class="screen">
   <div class="rays" id="rays"></div>
@@ -207,36 +200,19 @@
   <div class="head" id="trophyHead">¡Nivel completado!</div>
   <div class="unlock" id="trophyUnlock"><span class="lock" id="trophyLock">🔒</span><span id="trophyUnlockText"></span></div>
   <div class="row" id="trophyRow">
-    <button class="big-btn" onclick="openShelf()">Mis trofeos 🏆</button>
+    <button class="big-btn alt" onclick="backToMap()">🗺️ Niveles</button>
     <button class="big-btn" id="trophyGo" onclick="afterTrophy()">Seguir →</button>
   </div>
 </section>
 
-<!-- ================= SHELF ================= -->
-<section id="shelf" class="screen">
-  <div class="topbar">
-    <button class="icon-btn" onclick="showScreen('start')">🏠</button>
-    <span class="title">Mis trofeos 🏆</span>
-    <div class="spacer"></div>
-    <span class="chip stars"><span id="shelfCount">0</span>/15</span>
-  </div>
-  <div class="grid" id="shelfGrid"></div>
-</section>
-
-<!-- ================= MENU SHEET ================= -->
-<div class="sheet-bg" id="sheetBg" onclick="closeMenu(event)">
+<!-- ================= ADULT'S PANEL ================= -->
+<div class="sheet-bg" id="sheetBg" onclick="closeTools(event)">
   <div class="sheet" onclick="event.stopPropagation()">
-    <h3>Nivel</h3>
-    <div class="levelgrid" id="levelGrid"></div>
-    <div class="hintline">Un nivel con 🔒 se abre con el trofeo del nivel anterior.
-      El adulto puede abrirlo igual: mantén el dedo sobre el candado.</div>
     <h3>Modo</h3>
     <label class="toggle"><span>Ver el dibujo desde el inicio 🖼️</span>
       <input type="checkbox" id="easyMode" onchange="toggleEasy()" style="width:26px;height:26px"></label>
     <h3>Otros</h3>
     <div class="pillrow">
-      <button class="pill" onclick="closeMenu(); openVowels()">Las vocales 🅰️</button>
-      <button class="pill" onclick="closeMenu(); openShelf()">Mis trofeos 🏆</button>
       <button class="pill danger" onclick="resetProgress()">Borrar progreso 🗑️</button>
     </div>
   </div>
@@ -246,7 +222,6 @@
 
 <script>
 /* =================== DATA =================== */
-const VOWELS = ['a','e','i','o','u'];
 const WORDS = [
   {w:'oso', syl:['o','so'], em:'🐻', lvl:1},
   {w:'sopa', syl:['so','pa'], em:'🍲', lvl:1},
@@ -368,11 +343,11 @@ const TROPHIES = ['🏆','🥇','👑','🚀','⭐','🎖️','💎','🌟','�
 const STORE = 'aleer_v2';
 const OLD_KEY = /^aleer_.*_v1$/;
 
-function blank(){ return {stars:{}, hints:{}, trophies:[], vowels:[]}; }
+function blank(){ return {stars:{}, hints:{}, trophies:[]}; }
 function norm(p){
   const b = blank();
   return {stars:p.stars||b.stars, hints:p.hints||b.hints,
-          trophies:Array.isArray(p.trophies)?p.trophies:[], vowels:p.vowels||[]};
+          trophies:Array.isArray(p.trophies)?p.trophies:[]};
 }
 /* Levels whose every word already carries a star. Used once, when progress moves
    from the old key: without it a level could show a full bar and no trophy, and
@@ -421,13 +396,13 @@ let pendingTrophy = false;
 let lapTimer = null;              /* delayed "lap complete" line, cancelled on the next word */
 
 /* =================== HELPERS =================== */
-function showScreen(id){
+function show(id){
   document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
 }
+function onScreen(id){ return document.getElementById(id).classList.contains('active'); }
 function shuffle(a){ a=a.slice(); for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]];} return a; }
 function levelWords(lvl){ return WORDS.filter(x=>x.lvl===lvl); }
-function totalStars(){ return Object.values(prog.stars).reduce((a,b)=>a+b,0); }
 function hasTrophy(l){ return prog.trophies.indexOf(l)>=0; }
 function unlocked(l){ return l===1 || hasTrophy(l-1); }
 function firstOpenLevel(){
@@ -478,16 +453,56 @@ function loadImage(imgEl, emojiEl, word){
   })();
 }
 
+/* =================== NAVIGATION =================== */
+/* The game keeps its own history so the browser's back button lands on the map
+   instead of leaving the site. The map is always the bottom of the stack, a
+   level sits one entry above it, and the party rides on the level's entry —
+   giving the party an entry of its own would let "forward" congratulate the
+   child for a level they have since erased. */
+function openMap(){ show('map'); renderMap(); }
+function goLevel(l){ history.pushState({screen:'game', level:l}, ''); startLevel(l); }
+function backToMap(){ history.back(); }
+addEventListener('popstate', e=>{
+  const st = e.state || {screen:'map'};
+  /* An entry can outlive the level it points at: "Borrar progreso" closes the
+     locks again, and the browser's forward button would otherwise walk the child
+     straight past one. Step back onto the map entry that always sits under a
+     level entry — rewriting this one instead would leave two maps in a row. */
+  if(st.screen==='game' && !unlocked(st.level)){ history.back(); return; }
+  if(st.screen==='game') startLevel(st.level); else openMap();
+});
+
+/* =================== LEVEL MAP =================== */
+function renderMap(){
+  const grid=document.getElementById('mapGrid'); grid.innerHTML='';
+  document.getElementById('cupCount').textContent=prog.trophies.length;
+  /* No ring once every cup is won: firstOpenLevel() falls back to 1, and a ring
+     there would point the child at a level they have already finished. */
+  const next=prog.trophies.length<LEVELS ? firstOpenLevel() : 0;
+  for(let l=1;l<=LEVELS;l++){
+    const won=hasTrophy(l), open=unlocked(l);
+    const b=document.createElement('button');
+    b.className='lvltile'+(won?' won':'')+(open?'':' locked')+(l===next?' next':'');
+    const num=document.createElement('span'); num.className='num'; num.textContent=l;
+    const mark=document.createElement('span'); mark.className='mark';
+    mark.textContent = won ? TROPHIES[l-1] : (open ? '' : '🔒');
+    b.appendChild(mark); b.appendChild(num);
+    if(open) b.onclick=()=>goLevel(l);
+    else holdTo(b, ()=>{ playUnlock(); goLevel(l); });
+    grid.appendChild(b);
+  }
+}
+
 /* =================== GAME FLOW =================== */
-function startGame(){
-  showScreen('game');
-  /* The lap survives a trip to the shelf and back: it is only reset when the
+function startLevel(l){
+  curLevel = l;
+  show('game');
+  /* The lap survives a trip to the map and back: it is only reset when the
      child actually moves to another level. */
   if(circleLevel !== curLevel){ circle = new Set(); circleLevel = curLevel; }
   pendingTrophy = false;
   buildQueue();
   nextWord();
-  syncStars();
 }
 function buildQueue(){
   const list = levelWords(curLevel);
@@ -568,7 +583,7 @@ function markRead(){
   /* The trophy is stored right here, not on the party screen: leaving the game
      before "Siguiente" must not cost the child the level they just finished. */
   if(wonNow) prog.trophies.push(curLevel);
-  save(); syncStars(); updateLevelBar();
+  save(); updateLevelBar();
 
   document.getElementById('btnHint').style.display='none';
   document.getElementById('btnRead').style.display='none';
@@ -592,7 +607,6 @@ function markRead(){
     cheer.textContent = pick(['¡Bravo! 🎉','¡Muy bien! 👏','¡Excelente! 🌟','¡Lo lograste! 🥳']);
   }
 }
-function syncStars(){ document.getElementById('starCount').textContent=totalStars(); }
 function updateLevelBar(){
   const lw=levelWords(curLevel);
   const done=lw.filter(x=>(prog.stars[x.w]||0)>0).length;
@@ -603,7 +617,7 @@ function updateLevelBar(){
 function showTrophy(){
   pendingTrophy = false;
   const level = curLevel;   /* the trophy itself was stored back in markRead */
-  showScreen('trophy');
+  show('trophy');           /* no history entry: the party rides on the level's */
 
   const cup=document.getElementById('cup');
   const rays=document.getElementById('rays');
@@ -644,87 +658,43 @@ function showTrophy(){
   }
   setTimeout(()=>row.classList.add('on'), 2100);
 }
+/* The party sits on the level's history entry, so moving on replaces it: the
+   stack stays two deep and "back" from the new level still lands on the map. */
 function afterTrophy(){
-  if(curLevel<LEVELS){ curLevel++; startGame(); }
-  else showScreen('start');
+  const next = curLevel+1;
+  history.replaceState({screen:'game', level:next}, '');
+  startLevel(next);
 }
 
-/* =================== SHELF =================== */
-function openShelf(){
-  showScreen('shelf');
-  const grid=document.getElementById('shelfGrid'); grid.innerHTML='';
-  document.getElementById('shelfCount').textContent=prog.trophies.length;
-  for(let l=1;l<=LEVELS;l++){
-    const won=hasTrophy(l);
-    const d=document.createElement('div');
-    d.className='pedestal '+(won?'won':'locked');
-    const it=document.createElement('div'); it.className='item';
-    it.textContent = won ? TROPHIES[l-1] : '🔒';
-    const lab=document.createElement('div'); lab.className='lab'; lab.textContent='Nivel '+l;
-    d.appendChild(it); d.appendChild(lab); grid.appendChild(d);
-  }
-}
-
-/* =================== VOWELS WARM-UP =================== */
-function openVowels(){
-  showScreen('vowels');
-  const row=document.getElementById('vowelRow'); row.innerHTML='';
-  document.getElementById('vowelGo').style.display='none';
-  document.getElementById('vowelCheer').textContent='Toca cada vocal 👆';
-  const tapped=new Set();
-  VOWELS.forEach((v,i)=>{
-    const s=document.createElement('span'); s.className='syl'; s.textContent=v.toUpperCase();
-    s.style.background=PALETTE[i%PALETTE.length];
-    s.onclick=()=>{
-      s.classList.remove('bounce'); void s.offsetWidth; s.classList.add('bounce'); playPop();
-      tapped.add(v);
-      if(tapped.size===VOWELS.length){
-        document.getElementById('vowelCheer').textContent='¡Muy bien! 🎉';
-        document.getElementById('vowelGo').style.display='';
-        playSuccess(); confetti(24);
-        prog.vowels=[...VOWELS]; save();
-      }
-    };
-    row.appendChild(s);
-  });
-}
-
-/* =================== MENU =================== */
-function openMenu(){
-  document.getElementById('sheetBg').classList.add('open');
-  const grid=document.getElementById('levelGrid'); grid.innerHTML='';
-  for(let l=1;l<=LEVELS;l++){
-    const open=unlocked(l), won=hasTrophy(l);
-    const b=document.createElement('button');
-    b.className='lvl'+(l===curLevel?' sel':'')+(open?'':' locked')+(won?' won':'');
-    b.textContent=l;
-    if(won){ const m=document.createElement('span'); m.className='mark'; m.textContent=TROPHIES[l-1]; b.appendChild(m); }
-    else if(!open){ const m=document.createElement('span'); m.className='mark'; m.textContent='🔒'; b.appendChild(m); }
-    if(open) b.onclick=()=>goLevel(l);
-    else holdToOpen(b, l);
-    grid.appendChild(b);
-  }
+/* =================== ADULT'S PANEL =================== */
+function openTools(){
   document.getElementById('easyMode').checked=easy;
+  document.getElementById('sheetBg').classList.add('open');
 }
-/* The adult's way past a lock: hold the finger on it. A child tapping never gets in. */
-function holdToOpen(btn, level){
+function closeTools(e){
+  if(e && e.target!==document.getElementById('sheetBg')) return;
+  document.getElementById('sheetBg').classList.remove('open');
+}
+/* The adult's way in: hold the finger down. A child tapping never gets through. */
+function holdTo(btn, fn){
   let timer=null;
-  const start=()=>{ clearTimeout(timer); timer=setTimeout(()=>{ playUnlock(); goLevel(level); }, 800); };
+  const start=()=>{ clearTimeout(timer); timer=setTimeout(fn, 800); };
   const stop=()=>{ clearTimeout(timer); timer=null; };
   btn.addEventListener('pointerdown', start);
   ['pointerup','pointerleave','pointercancel'].forEach(e=>btn.addEventListener(e, stop));
 }
-function goLevel(l){ curLevel=l; closeMenu(); startGame(); }
-function closeMenu(e){
-  if(e && e.target!==document.getElementById('sheetBg')) return;
-  document.getElementById('sheetBg').classList.remove('open');
+function toggleEasy(){
+  easy=document.getElementById('easyMode').checked;
+  if(current && onScreen('game')) renderWord();
 }
-function toggleEasy(){ easy=document.getElementById('easyMode').checked; if(current) renderWord(); }
 function resetProgress(){
-  if(confirm('¿Borrar todas las estrellas y empezar de nuevo?')){
+  if(confirm('¿Borrar todos los trofeos y empezar de nuevo?')){
     prog=blank(); save();
     circle=new Set(); circleLevel=null; pendingTrophy=false; curLevel=1;
-    closeMenu(); syncStars(); showScreen('start');
+    closeTools();
+    /* From a level, step back onto the map entry already in the history. On the
+       map there is nothing to step back to — one more step would leave the site. */
+    if(onScreen('map')) renderMap(); else history.back();
   }
 }
 
@@ -752,7 +722,14 @@ function stepC(){
   const raw = new URLSearchParams(location.search).get('name');
   if(raw){ const nm = raw.trim().slice(0,24).replace(/[<>]/g,''); if(nm) document.getElementById('greet').textContent = '¡Hola, '+nm+'! 🌟'; }
   curLevel = firstOpenLevel();
-  syncStars();
+  holdTo(document.getElementById('gearMap'), openTools);
+  holdTo(document.getElementById('gearGame'), openTools);
+  /* A reload inside a level stays in that level and keeps its history entry.
+     Replacing it with the map would put two identical map entries in a row, and
+     the back button would then look broken to the child. */
+  const st = history.state;
+  if(st && st.screen==='game' && unlocked(st.level)) startLevel(st.level);
+  else { history.replaceState({screen:'map'}, ''); openMap(); }
 })();
 </script>
 </body>

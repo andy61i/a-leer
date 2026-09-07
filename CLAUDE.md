@@ -34,11 +34,42 @@ shows "¡Hola!".
   (`tone()`), not audio files.
 - **Confetti**: a `<canvas>` particle effect (`confetti()`).
 - **Persistence**: `localStorage`, key `aleer_v2`. Shape:
-  `{ stars:{word:count}, hints:{word:count}, trophies:[level numbers], vowels:[...] }`.
+  `{ stars:{word:count}, hints:{word:count}, trophies:[level numbers] }`.
   If you change this shape, migrate or bump the key — don't silently break saved
   progress. `load()` already migrates from the previous key, which it finds by the
   pattern `aleer_*_v1` rather than by name: the old key carried the child's name
   and this repository is public.
+
+## Screens and navigation
+
+Three screens, and the map is the entry point.
+
+- **`#map`** — the level map, the first thing the child sees. Greeting, the cup
+  counter, then 15 tiles: a cup on a level with a trophy, a lock on a closed one,
+  a pulsing ring on the first level without a cup. Tapping a tile starts the level.
+- **`#game`** — the level itself. One big "🗺️ Niveles" button back to the map,
+  the level's name, and the adult's gear.
+- **`#trophy`** — the party after a level, with "🗺️ Niveles" and "Nivel N →".
+
+The game writes its own history so the browser's back button lands on the map
+instead of leaving the site. The map is always the bottom of the stack, a level
+sits one entry above it, and **the party gets no entry of its own** — it rides on
+the level's, so "forward" cannot replay a celebration for a level since erased.
+`goLevel()` pushes, "Nivel N →" replaces, every way back calls `history.back()`,
+so the stack does not grow. `show()` only draws a screen, never writes history.
+A history entry can outlive its level — after "Borrar progreso" the locks close
+again — so the `popstate` handler checks `unlocked()` and, for a level now shut,
+steps back onto the map entry underneath rather than rewriting the stale one.
+
+There is **no star counter anywhere in the UI**: the cups are the only number the
+child sees. `prog.stars` still counts every reading, because the progress bar and
+the locks stand on it.
+
+The adult's settings (easy mode, "Borrar progreso") live behind the small ⚙️,
+which opens on a **long press** — the same gesture that opens a lock. The gear
+sits on both the map and the level: moving it to the map alone would take away
+turning the picture on for the word the child is stuck on right now, since
+re-entering a level rebuilds the queue and deals a different word.
 
 ## The level ladder
 
@@ -94,13 +125,13 @@ belongs to: `lila` on 1, `verde` on 6, `amarillo` on 7, `marrón` on 15.
   Lives only in page memory. It is cleared on three occasions: moving to another
   level, closing a lap, and "Borrar progreso". Missing the second one makes the
   fanfare fire on every word after the lap closes. It deliberately survives a trip
-  to the shelf or the start screen and back to the same level (`circleLevel` guards
-  that), so a lap in progress is not silently thrown away.
+  to the map and back to the same level (`circleLevel` guards that), so a lap in
+  progress is not silently thrown away.
 - **The trophy is stored in `markRead`, not on the party screen.** Leaving the game
   before pressing "Siguiente" must not cost the child the level they just finished.
   `showTrophy()` only shows the party; the trophy and the unlocked next level are
   already in storage by then. Accepted limitation: if the child leaves before
-  "Siguiente", the party itself is not shown later — the trophy is on the shelf,
+  "Siguiente", the party itself is not shown later — the cup is on the map tile,
   but that one celebration is missed.
 - A level is unlocked when the previous one has a trophy. Level 1 is always open.
   The adult gets past a lock by holding a finger on it — a tap never opens it.
@@ -122,9 +153,8 @@ width by it. The divisor is the **stage** (max 680px), not the viewport — divi
 (0.70 per letter, 0.62 padding, 0.54 per dot) were calibrated against the real
 rendered width; if you change the font, padding or gap, re-measure them.
 
-The rule is scoped to `#word .syl` on purpose. The vowel warm-up uses the same
-`.syl` class and sets no `--wlen`; a global rule would collapse those letters to
-body-text size.
+The rule is scoped to `#word .syl` on purpose: any other `.syl` sets no `--wlen`,
+and a global rule would collapse those letters to body-text size.
 
 ## Images
 
