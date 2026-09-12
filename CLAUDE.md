@@ -62,8 +62,8 @@ again — so the `popstate` handler checks `unlocked()` and, for a level now shu
 steps back onto the map entry underneath rather than rewriting the stale one.
 
 There is **no star counter anywhere in the UI**: the cups are the only number the
-child sees. `prog.stars` still counts every reading, because the progress bar and
-the locks stand on it.
+child sees. `prog.stars` still counts every reading, because the trophy and the
+locks stand on it.
 
 The adult's settings (easy mode, "Borrar progreso") live behind the small ⚙️,
 which opens on a **long press** — the same gesture that opens a lock. The gear
@@ -75,7 +75,7 @@ re-entering a level rebuilds the queue and deals a different word.
 
 A level is a **step of difficulty**, never a theme. Each step introduces one
 reading rule, and a word only lands on a step once every rule it needs has been
-introduced. There are 15 steps and 111 words.
+introduced. There are 15 steps and 116 words.
 
 1. vowels + m, p, s, l — open syllables only
 2. n, d, t
@@ -120,13 +120,20 @@ belongs to: `lila` on 1, `verde` on 6, `amarillo` on 7, `marrón` on 15.
 ## Progress, locks and the party
 
 - **Level progress** — which words of a level have ever been read. Counted from
-  `prog.stars`, lives in storage, drives the progress bar and the locks.
+  `prog.stars`, lives in storage, drives the trophy and the locks.
 - **The lap** (`circle`) — which words have been read since this lap started.
-  Lives only in page memory. It is cleared on three occasions: moving to another
-  level, closing a lap, and "Borrar progreso". Missing the second one makes the
+  Lives only in page memory. It drives the segmented bar under the word. It is
+  cleared on three occasions: moving to another level, closing a lap, and
+  "Borrar progreso". Missing the second one makes the
   fanfare fire on every word after the lap closes. It deliberately survives a trip
   to the map and back to the same level (`circleLevel` guards that), so a lap in
   progress is not silently thrown away.
+- **The bar under the word** — one segment per word of the level, filled from the
+  left by the words read in the CURRENT pass. It follows the lap, never
+  `prog.stars`: on a level already won every word carries a star, so a bar drawn
+  from the stars sat full and never moved while the child read. Accepted
+  limitation: a level finished across two sittings takes its trophy from the
+  stars, so the cup can arrive before the segments fill.
 - **The trophy is stored in `markRead`, not on the party screen.** Leaving the game
   before pressing "Siguiente" must not cost the child the level they just finished.
   `showTrophy()` only shows the party; the trophy and the unlocked next level are

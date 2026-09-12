@@ -31,55 +31,54 @@ comparten es el color, y el niño nombra eso.
 Palabras de color: lila, morado, verde, amarillo, rojo, naranja, azul, celeste,
 blanco, negro, gris, violeta, marrón.
 OJO: rosa NO es un color aquí, es la flor. Su imagen actual sirve tal cual.
-lila.png de ahora muestra una rama de lilas — hay que rehacerla como color.
 
 LISTA DE PALABRAS POR NIVEL
 ---------------------------
 (✓ = la imagen ya existe)
 
 Nivel 1 — vocales + m, p, s, l
-  oso ✓  sopa ✓  papa ✓  sapo ✓  puma ✓  lila ✓  mesa
+  oso ✓  sopa ✓  papa ✓  sapo ✓  puma ✓  lila ✓  mesa ✓
 
 Nivel 2 — n, d, t
-  pato ✓  mono ✓  moto ✓  tomate ✓  pelota ✓  dedo  nido  luna
+  pato ✓  mono ✓  moto ✓  tomate ✓  pelota ✓  dedo ✓  nido ✓  luna ✓
 
 Nivel 3 — f, b, v
-  uva ✓  vaso ✓  pavo ✓  bote ✓  foto  vela  venado
+  uva ✓  vaso ✓  pavo ✓  bote ✓  foto ✓  vela ✓  venado ✓
 
 Nivel 4 — c y g ante a, o, u
-  casa ✓  cama ✓  foca ✓  vaca ✓  gato ✓  taco ✓  camisa  gatito  cuna  gota  gusano
+  casa ✓  cama ✓  foca ✓  vaca ✓  gato ✓  taco ✓  camisa ✓  gatito ✓  cuna ✓  gota ✓  gusano ✓
 
 Nivel 5 — r suave y r fuerte
-  pera ✓  loro ✓  toro ✓  rosa ✓  rana  morado  capibara
+  pera ✓  loro ✓  toro ✓  rosa ✓  rana ✓  morado ✓  capibara ✓
 
 Nivel 6 — sílabas cerradas
-  pan ✓  barco ✓  sol  tambor  verde  barba  computadora
+  pan ✓  barco ✓  sol ✓  tambor ✓  verde ✓  barba ✓  computadora ✓  papel  ventana
 
 Nivel 7 — rr y ll
-  perro  carro  burro  llave  pollo  silla  amarillo
+  perro ✓  carro ✓  burro ✓  llave ✓  pollo ✓  silla ✓  amarillo ✓
 
 Nivel 8 — ch y ñ
-  coche  leche  mochila  niño  piña  araña  muñeca
+  coche ✓  leche ✓  mochila ✓  niño ✓  piña ✓  araña ✓  muñeca ✓
 
 Nivel 9 — que, qui, gue, gui
-  queso  paquete  raqueta  mosquito  guitarra  manguera
+  queso ✓  paquete ✓  raqueta ✓  mosquito ✓  guitarra ✓  manguera ✓  panqueque
 
 Nivel 10 — j, ge, gi
-  ojo  jirafa  conejo  girasol  gigante  gemelos  rojo  naranja  orejas
+  ojo ✓  jirafa ✓  conejo ✓  girasol ✓  gigante ✓  gemelos ✓  rojo ✓  naranja ✓  orejas ✓  reloj
 
 Nivel 11 — ce, ci, z
-  bici ✓  zapato  zorro  manzana  taza  azul  celeste
+  bici ✓  zapato ✓  zorro ✓  manzana ✓  taza ✓  azul ✓  celeste ✓
 
 Nivel 12 — h muda
-  helado  hormiga  hoja  hilo  hada  hamaca
+  helado ✓  hormiga ✓  hoja ✓  hilo ✓  hada ✓  hamaca ✓
 
 Nivel 13 — grupos con l y r
-  libro ✓  globo ✓  tren ✓  blanco  negro  gris  flores  cangrejo
+  libro ✓  globo ✓  tren ✓  blanco ✓  negro ✓  gris ✓  flores ✓  cangrejo ✓
 
 Nivel 14 — dos vocales juntas
-  auto ✓  piano  nieve  puerta  huevo  violeta  anteojos
+  auto ✓  piano ✓  nieve ✓  puerta ✓  huevo ✓  violeta ✓  anteojos ✓  paraguas
 
 Nivel 15 — tildes
-  ratón  león  avión  lápiz  plátano  marrón  teléfono
+  ratón ✓  león ✓  avión ✓  lápiz ✓  plátano ✓  marrón ✓  teléfono ✓
 
-Total: 111 palabras, 32 con imagen, 79 por hacer.
+Total: 116 palabras, 111 con imagen, 5 por hacer.

@@ -107,9 +107,12 @@
   .ctrl[disabled]{opacity:.4; cursor:default;}
   .parent-note{font-size:12px; opacity:.55; width:100%; text-align:center; margin-top:-4px; flex:0 0 auto;}
 
-  .levelbar{width:min(70vw,380px); height:14px; background:#fff; border-radius:999px; overflow:hidden;
-            box-shadow:var(--shadow); flex:0 0 auto;}
-  .levelbar > div{height:100%; width:0; background:linear-gradient(90deg,var(--green),var(--blue)); transition:width .4s;}
+  /* One segment per word of the level: the child sees how many words are left
+     instead of reading a fraction off a smooth bar. */
+  .levelbar{width:min(70vw,380px); height:14px; display:flex; gap:4px; flex:0 0 auto;}
+  .levelbar .seg{flex:1 1 0; background:#fff; border-radius:999px; box-shadow:var(--shadow);
+                 transition:background .35s;}
+  .levelbar .seg.on{background:linear-gradient(180deg,var(--green),var(--green-d));}
 
   /* ---------- Trophy screen ---------- */
   #trophy{align-items:center; justify-content:center; text-align:center; gap:18px;}
@@ -182,7 +185,7 @@
     </div>
     <div class="word" id="word"></div>
     <div class="cheer" id="cheer"></div>
-    <div class="levelbar"><div id="levelfill"></div></div>
+    <div class="levelbar" id="levelbar"></div>
   </div>
 
   <div class="parent-note">💡 Pista — para quien lee &nbsp;·&nbsp; ✅ y → — para el adulto</div>
@@ -270,6 +273,8 @@ const WORDS = [
   {w:'verde', syl:['ver','de'], em:'🟢', lvl:6},
   {w:'barba', syl:['bar','ba'], em:'🧔', lvl:6},
   {w:'computadora', syl:['com','pu','ta','do','ra'], em:'💻', lvl:6},
+  {w:'papel', syl:['pa','pel'], em:'📄', lvl:6},
+  {w:'ventana', syl:['ven','ta','na'], em:'🪟', lvl:6},
   {w:'perro', syl:['pe','rro'], em:'🐶', lvl:7},
   {w:'carro', syl:['ca','rro'], em:'🛻', lvl:7},
   {w:'burro', syl:['bu','rro'], em:'🫏', lvl:7},
@@ -290,6 +295,7 @@ const WORDS = [
   {w:'mosquito', syl:['mos','qui','to'], em:'🦟', lvl:9},
   {w:'guitarra', syl:['gui','ta','rra'], em:'🎸', lvl:9},
   {w:'manguera', syl:['man','gue','ra'], em:'🚿', lvl:9},
+  {w:'panqueque', syl:['pan','que','que'], em:'🥞', lvl:9},
   {w:'ojo', syl:['o','jo'], em:'👁️', lvl:10},
   {w:'jirafa', syl:['ji','ra','fa'], em:'🦒', lvl:10},
   {w:'conejo', syl:['co','ne','jo'], em:'🐰', lvl:10},
@@ -299,6 +305,7 @@ const WORDS = [
   {w:'rojo', syl:['ro','jo'], em:'🔴', lvl:10},
   {w:'naranja', syl:['na','ran','ja'], em:'🟠', lvl:10},
   {w:'orejas', syl:['o','re','jas'], em:'👂', lvl:10},
+  {w:'reloj', syl:['re','loj'], em:'⏰', lvl:10},
   {w:'bici', syl:['bi','ci'], em:'🚲', lvl:11},
   {w:'zapato', syl:['za','pa','to'], em:'👟', lvl:11},
   {w:'zorro', syl:['zo','rro'], em:'🦊', lvl:11},
@@ -327,6 +334,7 @@ const WORDS = [
   {w:'huevo', syl:['hue','vo'], em:'🥚', lvl:14},
   {w:'violeta', syl:['vio','le','ta'], em:'🟪', lvl:14},
   {w:'anteojos', syl:['an','te','o','jos'], em:'👓', lvl:14},
+  {w:'paraguas', syl:['pa','ra','guas'], em:'☂️', lvl:14},
   {w:'ratón', syl:['ra','tón'], em:'🐭', lvl:15},
   {w:'león', syl:['le','ón'], em:'🦁', lvl:15},
   {w:'avión', syl:['a','vión'], em:'✈️', lvl:15},
@@ -607,10 +615,22 @@ function markRead(){
     cheer.textContent = pick(['¡Bravo! 🎉','¡Muy bien! 👏','¡Excelente! 🌟','¡Lo lograste! 🥳']);
   }
 }
+/* The segments follow the lap, not the stored stars: on a level the child has
+   already won every word carries a star, so a bar drawn from the stars would sit
+   full and never move while the child reads it again. Accepted limitation: when a
+   level is finished across two sittings, the trophy comes from the stars and can
+   fire before the segments fill. */
 function updateLevelBar(){
   const lw=levelWords(curLevel);
-  const done=lw.filter(x=>(prog.stars[x.w]||0)>0).length;
-  document.getElementById('levelfill').style.width=(lw.length? done/lw.length*100 : 0)+'%';
+  const bar=document.getElementById('levelbar');
+  if(bar.childElementCount!==lw.length){
+    bar.innerHTML='';
+    for(let i=0;i<lw.length;i++){
+      const s=document.createElement('span'); s.className='seg'; bar.appendChild(s);
+    }
+  }
+  const done=lw.filter(x=>circle.has(x.w)).length;
+  [...bar.children].forEach((s,i)=>s.classList.toggle('on', i<done));
 }
 
 /* =================== TROPHY =================== */
